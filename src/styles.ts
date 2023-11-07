@@ -17,3 +17,10 @@ export const StyledLink = styled(Link)`
   font-weight: 500;
   cursor: ${({ to }) => (to ? "pointer" : "default")};
 `;
+//stretch children to 100%
+export const TwoButtonGroupDiv = styled.div`
+  width: 100%;
+  & > div {
+    width: 100%;
+  }
+`;

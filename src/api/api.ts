@@ -25,7 +25,7 @@ export const getTagById = async (client: IDeskproClient, id: string) =>
 export const createTag = async (client: IDeskproClient, name: string) =>
   installedRequest(client, "workspaces/[user[workspace]]/tags", "POST", {
     name,
-    workspace_id: 7726430, //FIX
+    workspace_id: 7726430,
   });
 
 export const getWorkspaceById = (

@@ -1,6 +1,6 @@
 # Toggl Setup Instructions
 
-After installing the app, you will need to add your Toggl API key (which can be found at the bottom of the https://app.toggl.me/user/settings page) to the ticket sidebar.
+After installing the app, you will need to add your Toggl API key (which can be found at the bottom of the https://track.toggl.com/profile page) to the ticket sidebar.
 
 [![](/docs/assets/setup/api_key.png)](/docs/assets/setup/api_key.png)
 

@@ -68,11 +68,8 @@ export const Login = () => {
       {!submitted && (
         <div>
           <H5>You can find the API Token at the bottom of the</H5>
-          <StyledLink
-            to="https://app.clockify.me/user/settings"
-            target="_blank"
-          >
-            Clockify User Settings Page
+          <StyledLink to="https://track.toggl.com/profile" target="_blank">
+            Toggl User Settings Page
           </StyledLink>
         </div>
       )}
@@ -85,7 +82,6 @@ export const Login = () => {
           }
         </H1>
       )}
-      +
       {workspaces.isFetching ? (
         <LoadingSpinnerCenter />
       ) : (

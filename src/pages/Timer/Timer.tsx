@@ -6,6 +6,7 @@ import {
   useInitialisedDeskproAppClient,
   useQueryWithClient,
   Select,
+  TwoButtonGroup,
 } from "@deskpro/app-sdk";
 import {
   AnyIcon,
@@ -37,9 +38,8 @@ import {
 } from "../../api/api";
 import { InputWithTitle } from "../../components/InputWithTitle/InputWithTitle";
 import { LoadingSpinnerCenter } from "../../components/LoadingSpinnerCenter/LoadingSpinnerCenter";
-import { Property } from "../../styles";
+import { Property, TwoButtonGroupDiv } from "../../styles";
 import { colors, dateToHHMMSS } from "../../utils/utils";
-import { TwoButtonGroup } from "../../components/TwoButtonGroup/TwoButtonGroup";
 import { DateField } from "../../components/DateField/DateField";
 import { queryClient } from "../../query";
 
@@ -213,20 +213,22 @@ export const Timer = () => {
   return (
     <Stack vertical gap={10}>
       <Stack style={{ alignSelf: "center", width: "100%" }}>
-        <TwoButtonGroup
-          selected={
-            {
-              0: "one",
-              1: "two",
-            }[page] as "one" | "two"
-          }
-          oneIcon={faMagnifyingGlass}
-          twoIcon={faPlus}
-          oneLabel="Timer"
-          twoLabel="Manual"
-          oneOnClick={() => !toggledEntry && setPage(0)}
-          twoOnClick={() => !toggledEntry && setPage(1)}
-        />
+        <TwoButtonGroupDiv>
+          <TwoButtonGroup
+            selected={
+              {
+                0: "one",
+                1: "two",
+              }[page] as "one" | "two"
+            }
+            oneIcon={faMagnifyingGlass}
+            twoIcon={faPlus}
+            oneLabel="Timer"
+            twoLabel="Manual"
+            oneOnClick={() => !toggledEntry && setPage(0)}
+            twoOnClick={() => !toggledEntry && setPage(1)}
+          />
+        </TwoButtonGroupDiv>
       </Stack>
       <InputWithTitle
         title="Description"
