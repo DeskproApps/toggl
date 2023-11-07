@@ -8,7 +8,11 @@ import { ICreateTimeEntry, ITimeEntry } from "../types/timeEntry";
 import { RequestMethod } from "./types";
 import { IWorkspace } from "../types/workspace";
 
-export const getTag = async (client: IDeskproClient, name: string) => {
+export const getTag = async (
+  client: IDeskproClient,
+  name: string,
+  workspaceId: string
+) => {
   const tags = await getTags(client);
   const tag = tags?.find((t) => t.name === name);
 
@@ -16,16 +20,20 @@ export const getTag = async (client: IDeskproClient, name: string) => {
     return tag;
   }
 
-  return createTag(client, name);
+  return createTag(client, name, workspaceId);
 };
 
 export const getTagById = async (client: IDeskproClient, id: string) =>
   installedRequest(client, `workspaces/[user[workspace]]/tags/${id}`, "GET");
 
-export const createTag = async (client: IDeskproClient, name: string) =>
+export const createTag = async (
+  client: IDeskproClient,
+  name: string,
+  workspaceId: string
+) =>
   installedRequest(client, "workspaces/[user[workspace]]/tags", "POST", {
     name,
-    workspace_id: 7726430,
+    workspace_id: workspaceId,
   });
 
 export const getWorkspaceById = (
@@ -95,7 +103,8 @@ export const getTimeEntry = (
 export const createTimeEntry = async (
   client: IDeskproClient,
   data: ICreateTimeEntry,
-  ticketId: string
+  ticketId: string,
+  workspaceId: string
 ) => {
   const res = await installedRequest(
     client,
@@ -106,7 +115,7 @@ export const createTimeEntry = async (
       created_with: "Deskpro",
       duration: data.duration || -1,
       start: new Date().toISOString(),
-      workspace_id: 7726430,
+      workspace_id: workspaceId,
     }
   );
 

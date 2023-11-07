@@ -47,6 +47,7 @@ export const Timer = () => {
   const navigate = useNavigate();
   const { theme } = useDeskproAppTheme();
 
+  const [workspaceId, setWorkspaceId] = useState<string | undefined>(undefined);
   const [page, setPage] = useState<number>(0);
   const [initiallyChecked, setInitiallyChecked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -98,9 +99,14 @@ export const Timer = () => {
 
   const tagQuery = useQueryWithClient(
     ["tag"],
-    (client) => getTag(client, `deskpro-ticket-${context?.data.ticket.id}`),
+    (client) =>
+      getTag(
+        client,
+        `deskpro-ticket-${context?.data.ticket.id}`,
+        workspaceId as string
+      ),
     {
-      enabled: !!context?.data.ticket.id,
+      enabled: !!context?.data.ticket.id || !!workspaceId,
     }
   );
 
@@ -126,6 +132,12 @@ export const Timer = () => {
   );
 
   const toggledEntry = currentTimeEntryQuery.data;
+
+  useInitialisedDeskproAppClient((client) => {
+    client.getUserState("workspace").then((state) => {
+      setWorkspaceId(state[0].data as string);
+    });
+  });
 
   useEffect(() => {
     if (initiallyChecked || !timeEntriesQuery.isSuccess || !toggledEntry)
@@ -372,7 +384,8 @@ export const Timer = () => {
                   }
                 : {}),
             },
-            context?.data.ticket.id
+            context?.data.ticket.id,
+            workspaceId as string
           ).then(() => {
             currentTimeEntryQuery.refetch();
           });
