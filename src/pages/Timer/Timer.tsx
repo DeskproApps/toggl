@@ -258,7 +258,6 @@ export const Timer = () => {
               value: e.id,
               type: "value",
             }))}
-            error={!toggledEntry && !project}
             disabled={!!toggledEntry}
             initValue={[]}
           />
@@ -387,6 +386,14 @@ export const Timer = () => {
             context?.data.ticket.id,
             workspaceId as string
           ).then(() => {
+            if (page === 1) {
+              setTimePassedMs(
+                (prev) =>
+                  (prev || 0) +
+                  (new Date(endDate as string).getTime() -
+                    new Date(startDate as string).getTime())
+              );
+            }
             currentTimeEntryQuery.refetch();
           });
 

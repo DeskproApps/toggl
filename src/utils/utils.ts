@@ -2,10 +2,21 @@ export const parseJsonErrorMessage = (error: string) => {
   try {
     const parsedError = JSON.parse(error);
 
-    return `Status: ${parsedError.status} \n Message: ${parsedError.message}`;
+    return `Status: ${parsedError.status} \n Message: ${getErrorMessage(
+      parsedError.message
+    )}`;
   } catch {
     return error;
   }
+};
+
+export const getErrorMessage = (error: string) => {
+  if (!error) return error;
+
+  if (error.includes("Incorrect username and/or password"))
+    return "Invalid API Token";
+
+  return error;
 };
 
 export const dateToHHMMSS = (dateParam: number) => {

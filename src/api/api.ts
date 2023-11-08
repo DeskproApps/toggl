@@ -114,7 +114,7 @@ export const createTimeEntry = async (
       ...data,
       created_with: "Deskpro",
       duration: data.duration || -1,
-      start: new Date().toISOString(),
+      start: data.start || new Date().toISOString(),
       workspace_id: workspaceId,
     }
   );
