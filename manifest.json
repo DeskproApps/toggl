@@ -2,7 +2,7 @@
   "name": "@deskpro-apps/toggl",
   "title": "Toggl",
   "description": "Streamline your time management with Toggl",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "scope": "agent",
   "isSingleInstall": false,
   "hasDevMode": true,
