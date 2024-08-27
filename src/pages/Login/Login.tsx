@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { InputWithTitle } from "../../components/InputWithTitle/InputWithTitle";
 import { LoadingSpinnerCenter } from "../../components/LoadingSpinnerCenter/LoadingSpinnerCenter";
+import { Container } from "../../components/Layout";
 import { getWorkspaces } from "../../api/api";
 import { parseJsonErrorMessage } from "../../utils/utils";
 import { StyledLink } from "../../styles";
@@ -57,74 +58,76 @@ export const Login = () => {
   );
 
   return (
-    <Stack vertical gap={10}>
-      <InputWithTitle
-        setValue={(e) => setApiToken(e)}
-        title="API Token"
-        value={apiToken}
-        data-testid="api-token-input"
-        error={!!workspaces.error}
-      />
-      {!submitted && (
-        <div>
-          <H5>You can find the API Token at the bottom of the</H5>
-          <StyledLink to="https://track.toggl.com/profile" target="_blank">
-            Toggl User Settings Page
-          </StyledLink>
-        </div>
-      )}
-      {(workspaces.error as string) && !workspaces.isFetching && (
-        <H1 style={{ color: theme.colors.red100 }}>
-          {
-            parseJsonErrorMessage(
-              (workspaces.error as Error).toString()
-            ) as string
-          }
-        </H1>
-      )}
-      {workspaces.isFetching ? (
-        <LoadingSpinnerCenter />
-      ) : (
-        workspaces.isSuccess && (
-          <Stack vertical gap={5}>
-            <H1>Please select the workspace you'd like to use:</H1>
-            <Stack vertical style={{ marginTop: "10px" }} gap={10}>
-              <Stack vertical gap={10}>
-                {workspaces.data?.map((workspaceFromList, i) => (
-                  <Stack gap={5} key={i}>
-                    <Radio
-                      style={{
-                        color: theme.colors.grey500,
-                        fontWeight: "bold",
-                        fontSize: "16px",
-                      }}
-                      data-testid={`radio-workspace-${workspaceFromList.id}`}
-                      checked={workspace === workspaceFromList.id}
-                      onChange={() => setWorkspace(workspaceFromList.id)}
-                    />
-                    <H1>{workspaceFromList.name}</H1>
-                  </Stack>
-                ))}
-                <Button
-                  text="Login"
-                  data-testid={startLogin ? "startedLogin" : "notStartedLogin"}
-                  onClick={() => {
-                    if (!workspace) return;
+    <Container>
+      <Stack vertical gap={10}>
+        <InputWithTitle
+          setValue={(e) => setApiToken(e)}
+          title="API Token"
+          value={apiToken}
+          data-testid="api-token-input"
+          error={!!workspaces.error}
+        />
+        {!submitted && (
+          <div>
+            <H5>You can find the API Token at the bottom of the</H5>
+            <StyledLink to="https://track.toggl.com/profile" target="_blank">
+              Toggl User Settings Page
+            </StyledLink>
+          </div>
+        )}
+        {(workspaces.error as string) && !workspaces.isFetching && (
+          <H1 style={{ color: theme.colors.red100 }}>
+            {
+              parseJsonErrorMessage(
+                (workspaces.error as Error).toString()
+              ) as string
+            }
+          </H1>
+        )}
+        {workspaces.isFetching ? (
+          <LoadingSpinnerCenter />
+        ) : (
+          workspaces.isSuccess && (
+            <Stack vertical gap={5}>
+              <H1>Please select the workspace you'd like to use:</H1>
+              <Stack vertical style={{ marginTop: "10px" }} gap={10}>
+                <Stack vertical gap={10}>
+                  {workspaces.data?.map((workspaceFromList, i) => (
+                    <Stack gap={5} key={i}>
+                      <Radio
+                        style={{
+                          color: theme.colors.grey500,
+                          fontWeight: "bold",
+                          fontSize: "16px",
+                        }}
+                        data-testid={`radio-workspace-${workspaceFromList.id}`}
+                        checked={workspace === workspaceFromList.id}
+                        onChange={() => setWorkspace(workspaceFromList.id)}
+                      />
+                      <H1>{workspaceFromList.name}</H1>
+                    </Stack>
+                  ))}
+                  <Button
+                    text="Login"
+                    data-testid={startLogin ? "startedLogin" : "notStartedLogin"}
+                    onClick={() => {
+                      if (!workspace) return;
 
-                    setStartLogin(true);
-                  }}
-                ></Button>
+                      setStartLogin(true);
+                    }}
+                  ></Button>
+                </Stack>
+                {!!workspaces.error && (
+                  <H1>
+                    There was an error fetching your workspaces. Please make sure
+                    the API Token is correct
+                  </H1>
+                )}
               </Stack>
-              {!!workspaces.error && (
-                <H1>
-                  There was an error fetching your workspaces. Please make sure
-                  the API Token is correct
-                </H1>
-              )}
             </Stack>
-          </Stack>
-        )
-      )}
-    </Stack>
+          )
+        )}
+      </Stack>
+    </Container>
   );
 };
