@@ -26,7 +26,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
   createTimeEntry,
   getCurrentTimeEntry,
@@ -42,6 +41,7 @@ import { Property, TwoButtonGroupDiv } from "../../styles";
 import { colors, dateToHHMMSS } from "../../utils/utils";
 import { DateField } from "../../components/DateField/DateField";
 import { queryClient } from "../../query";
+import { Container } from "../../components/Layout";
 
 export const Timer = () => {
   const navigate = useNavigate();
@@ -192,7 +192,11 @@ export const Timer = () => {
     timePassedMs === null ||
     !projectsQuery.isSuccess
   )
-    return <LoadingSpinnerCenter />;
+    return (
+      <Container>
+        <LoadingSpinnerCenter />
+      </Container>
+    );
 
   if (
     !initiallyChecked &&
@@ -200,212 +204,216 @@ export const Timer = () => {
     !currentTimeEntryQuery.data?.tag_ids.includes(tagQuery.data.id)
   ) {
     return (
-      <Stack vertical gap={10}>
-        <H1>
-          There is currently a time entry already running that does not belong
-          to this ticket.
-          <br />
-          In order to continue, the time entry must be stopped.
-        </H1>
-        <Button
-          text="⠀⠀Stop⠀⠀"
-          loading={loading}
-          onClick={async () => {
-            setLoading(true);
-            await stopTimeEntry(client, toggledEntry?.id as string).then(() => {
-              setInitiallyChecked(true);
-            });
-            setLoading(false);
-          }}
-        ></Button>
-      </Stack>
+      <Container>
+        <Stack vertical gap={10}>
+          <H1>
+            There is currently a time entry already running that does not belong
+            to this ticket.
+            <br />
+            In order to continue, the time entry must be stopped.
+          </H1>
+          <Button
+            text="⠀⠀Stop⠀⠀"
+            loading={loading}
+            onClick={async () => {
+              setLoading(true);
+              await stopTimeEntry(client, toggledEntry?.id as string).then(() => {
+                setInitiallyChecked(true);
+              });
+              setLoading(false);
+            }}
+          ></Button>
+        </Stack>
+      </Container>
     );
   }
 
   return (
-    <Stack vertical gap={10}>
-      <Stack style={{ alignSelf: "center", width: "100%" }}>
-        <TwoButtonGroupDiv>
-          <TwoButtonGroup
-            selected={
-              {
-                0: "one",
-                1: "two",
-              }[page] as "one" | "two"
-            }
-            oneIcon={faMagnifyingGlass}
-            twoIcon={faPlus}
-            oneLabel="Timer"
-            twoLabel="Manual"
-            oneOnClick={() => !toggledEntry && setPage(0)}
-            twoOnClick={() => !toggledEntry && setPage(1)}
-          />
-        </TwoButtonGroupDiv>
-      </Stack>
-      <InputWithTitle
-        title="Description"
-        setValue={setSubject}
-        disabled={!!toggledEntry}
-        value={subject}
-      />
-      {projectsQuery.data.length > 0 && (
-        <Label label="Project">
-          <Select<string>
-            onChange={(e) => setProject(e && e[0])}
-            options={projectsQuery.data?.map((e) => ({
-              key: e.id,
-              label: e.name,
-              value: e.id,
-              type: "value",
-            }))}
-            disabled={!!toggledEntry}
-            initValue={[]}
-          />
-        </Label>
-      )}
-      <Stack vertical style={{ width: "100%" }}>
-        <Stack vertical style={{ color: theme.colors.grey80 }} gap={5}>
-          <P8 style={{ color: theme?.colors?.grey80 }}>Tags</P8>
-          <Stack gap={5} style={{ flexWrap: "wrap" }}>
-            {tags
-              .filter((e) => e !== tagQuery.data?.id)
-              .map((tag, i) => (
-                <Tag
-                  closeIcon={faTimes as AnyIcon}
-                  color={usedColorsTags[i]}
-                  onCloseClick={() =>
-                    !toggledEntry
-                      ? setTags((prev) => prev.filter((e) => e !== tag))
-                      : {}
-                  }
-                  label={tagsQuery.data?.find((e) => e.id === tag)?.name ?? tag}
-                  key={i}
-                  withClose
-                ></Tag>
-              ))}
+    <Container>
+      <Stack vertical gap={10}>
+        <Stack style={{ alignSelf: "center", width: "100%" }}>
+          <TwoButtonGroupDiv>
+            <TwoButtonGroup
+              selected={
+                {
+                  0: "one",
+                  1: "two",
+                }[page] as "one" | "two"
+              }
+              oneIcon={faMagnifyingGlass}
+              twoIcon={faPlus}
+              oneLabel="Timer"
+              twoLabel="Manual"
+              oneOnClick={() => !toggledEntry && setPage(0)}
+              twoOnClick={() => !toggledEntry && setPage(1)}
+            />
+          </TwoButtonGroupDiv>
+        </Stack>
+        <InputWithTitle
+          title="Description"
+          setValue={setSubject}
+          disabled={!!toggledEntry}
+          value={subject}
+        />
+        {projectsQuery.data.length > 0 && (
+          <Label label="Project">
+            <Select<string>
+              onChange={(e) => setProject(e && e[0])}
+              options={projectsQuery.data?.map((e) => ({
+                key: e.id,
+                label: e.name,
+                value: e.id,
+                type: "value",
+              }))}
+              disabled={!!toggledEntry}
+              initValue={[]}
+            />
+          </Label>
+        )}
+        <Stack vertical style={{ width: "100%" }}>
+          <Stack vertical style={{ color: theme.colors.grey80 }} gap={5}>
+            <P8 style={{ color: theme?.colors?.grey80 }}>Tags</P8>
+            <Stack gap={5} style={{ flexWrap: "wrap" }}>
+              {tags
+                .filter((e) => e !== tagQuery.data?.id)
+                .map((tag, i) => (
+                  <Tag
+                    closeIcon={faTimes as AnyIcon}
+                    color={usedColorsTags[i]}
+                    onCloseClick={() =>
+                      !toggledEntry
+                        ? setTags((prev) => prev.filter((e) => e !== tag))
+                        : {}
+                    }
+                    label={tagsQuery.data?.find((e) => e.id === tag)?.name ?? tag}
+                    key={i}
+                    withClose
+                  ></Tag>
+                ))}
+            </Stack>
+          </Stack>
+          <Stack gap={5} style={{ width: "100%", alignItems: "center" }}>
+            <Select<string>
+              options={
+                tagsQuery.data
+                  ?.filter((e) => !e.name.startsWith("deskpro-ticket-"))
+                  .map((e) => ({
+                    key: e.id,
+                    label: e.name,
+                    value: e.id,
+                    type: "value",
+                  })) ?? []
+              }
+              initValue={[]}
+              onChange={(value) => {
+                !toggledEntry && setTags(value as string[]);
+              }}
+            >
+              <Button
+                text="Add"
+                icon={faPlus as AnyIcon}
+                minimal
+                style={{
+                  borderBottom: `1px solid ${theme.colors.grey20}`,
+                }}
+              />
+            </Select>
           </Stack>
         </Stack>
-        <Stack gap={5} style={{ width: "100%", alignItems: "center" }}>
-          <Select<string>
-            options={
-              tagsQuery.data
-                ?.filter((e) => !e.name.startsWith("deskpro-ticket-"))
-                .map((e) => ({
-                  key: e.id,
-                  label: e.name,
-                  value: e.id,
-                  type: "value",
-                })) ?? []
-            }
-            initValue={[]}
-            onChange={(value) => {
-              !toggledEntry && setTags(value as string[]);
-            }}
-          >
-            <Button
-              text="Add"
-              icon={faPlus as AnyIcon}
-              minimal
-              style={{
-                borderBottom: `1px solid ${theme.colors.grey20}`,
-              }}
-            />
-          </Select>
+        <Stack vertical gap={5}>
+          <P8 style={{ color: theme?.colors?.grey80 }}>Billable</P8>
+          <Checkbox
+            disabled={!!toggledEntry}
+            label="Billable"
+            checked={isBillable}
+            onChange={() => setIsBillable(!isBillable)}
+          />
         </Stack>
-      </Stack>
-      <Stack vertical gap={5}>
-        <P8 style={{ color: theme?.colors?.grey80 }}>Billable</P8>
-        <Checkbox
-          disabled={!!toggledEntry}
-          label="Billable"
-          checked={isBillable}
-          onChange={() => setIsBillable(!isBillable)}
-        />
-      </Stack>
-      {page === 1 && (
-        <>
-          <DateField
-            value={startDate || ""}
-            required
-            onChange={(e: Date[]) => setStartDate(e[0].toISOString())}
-            label="Start Date"
-          />
-          <DateField
-            value={endDate || ""}
-            required
-            onChange={(e: Date[]) => setEndDate(e[0].toISOString())}
-            label="End Date"
-          />
-        </>
-      )}
-      <Button
-        loading={loading}
-        data-testid="change-time-entry"
-        text={
-          page === 1 ? "⠀⠀Create⠀⠀" : toggledEntry ? "⠀⠀Stop⠀⠀" : "⠀⠀Start⠀⠀"
-        }
-        onClick={async () => {
-          if (toggledEntry) {
+        {page === 1 && (
+          <>
+            <DateField
+              value={startDate || ""}
+              required
+              onChange={(e: Date[]) => setStartDate(e[0].toISOString())}
+              label="Start Date"
+            />
+            <DateField
+              value={endDate || ""}
+              required
+              onChange={(e: Date[]) => setEndDate(e[0].toISOString())}
+              label="End Date"
+            />
+          </>
+        )}
+        <Button
+          loading={loading}
+          data-testid="change-time-entry"
+          text={
+            page === 1 ? "⠀⠀Create⠀⠀" : toggledEntry ? "⠀⠀Stop⠀⠀" : "⠀⠀Start⠀⠀"
+          }
+          onClick={async () => {
+            if (toggledEntry) {
+              setLoading(true);
+
+              await stopTimeEntry(client, toggledEntry?.id as string).then(() => {
+                currentTimeEntryQuery.refetch();
+              });
+
+              setLoading(false);
+
+              return;
+            }
+
+            if (page === 1 && (!startDate || !endDate)) return;
+
             setLoading(true);
 
-            await stopTimeEntry(client, toggledEntry?.id as string).then(() => {
+            await createTimeEntry(
+              client,
+              {
+                start: new Date().toISOString(),
+                description: subject,
+                tag_ids: [
+                  tagQuery.data.id,
+                  ...tags.filter((e) => e !== tagQuery.data.id),
+                ],
+                ...(project && { projectId: project }),
+                billable: isBillable,
+                ...(page === 1
+                  ? {
+                      start: startDate,
+                      duration: Math.round(
+                        (new Date(endDate as string).getTime() -
+                          new Date(startDate as string).getTime()) /
+                          1000
+                      ),
+                    }
+                  : {}),
+              },
+              context?.data.ticket.id,
+              workspaceId as string
+            ).then(() => {
+              if (page === 1) {
+                setTimePassedMs(
+                  (prev) =>
+                    (prev || 0) +
+                    (new Date(endDate as string).getTime() -
+                      new Date(startDate as string).getTime())
+                );
+              }
               currentTimeEntryQuery.refetch();
             });
 
             setLoading(false);
-
-            return;
-          }
-
-          if (page === 1 && (!startDate || !endDate)) return;
-
-          setLoading(true);
-
-          await createTimeEntry(
-            client,
-            {
-              start: new Date().toISOString(),
-              description: subject,
-              tag_ids: [
-                tagQuery.data.id,
-                ...tags.filter((e) => e !== tagQuery.data.id),
-              ],
-              ...(project && { projectId: project }),
-              billable: isBillable,
-              ...(page === 1
-                ? {
-                    start: startDate,
-                    duration: Math.round(
-                      (new Date(endDate as string).getTime() -
-                        new Date(startDate as string).getTime()) /
-                        1000
-                    ),
-                  }
-                : {}),
-            },
-            context?.data.ticket.id,
-            workspaceId as string
-          ).then(() => {
-            if (page === 1) {
-              setTimePassedMs(
-                (prev) =>
-                  (prev || 0) +
-                  (new Date(endDate as string).getTime() -
-                    new Date(startDate as string).getTime())
-              );
-            }
-            currentTimeEntryQuery.refetch();
-          });
-
-          setLoading(false);
-        }}
-      />
-      <div style={{ fontWeight: "bold" }}>
-        <Property
-          label="Time Elapsed"
-          text={<H2>{dateToHHMMSS(timePassedMs).toString()}</H2>}
+          }}
         />
-      </div>
-    </Stack>
+        <div style={{ fontWeight: "bold" }}>
+          <Property
+            label="Time Elapsed"
+            text={<H2>{dateToHHMMSS(timePassedMs).toString()}</H2>}
+          />
+        </div>
+      </Stack>
+    </Container>
   );
 };
