@@ -61,7 +61,7 @@ export const Timer = () => {
   const [fetchedCurrent, setFetchedCurrent] = useState<boolean>(false);
 
   const { client } = useDeskproAppClient();
-  const { context } = useDeskproLatestAppContext();
+  const { context } = useDeskproLatestAppContext<{ticket: {id: string}}, {}>();
 
   useInitialisedDeskproAppClient((client) => {
     client.setTitle(`Create Time Entry`);
@@ -102,11 +102,11 @@ export const Timer = () => {
     (client) =>
       getTag(
         client,
-        `deskpro-ticket-${context?.data.ticket.id}`,
+        `deskpro-ticket-${context?.data?.ticket.id}`,
         workspaceId as string
       ),
     {
-      enabled: !!context?.data.ticket.id || !!workspaceId,
+      enabled: !!context?.data?.ticket.id || !!workspaceId,
     }
   );
 
@@ -116,14 +116,14 @@ export const Timer = () => {
   );
 
   const tagsQuery = useQueryWithClient(["tags"], (client) => getTags(client), {
-    enabled: !!context?.data.ticket.id,
+    enabled: !!context?.data?.ticket.id,
   });
 
   const timeEntriesQuery = useQueryWithClient(
     ["getTimeEntriesByTicketId"],
-    (client) => getTimeEntriesByTicketId(client, context?.data.ticket.id),
+    (client) => getTimeEntriesByTicketId(client, context?.data?.ticket.id ?? ''),
     {
-      enabled: !!context?.data.ticket.id,
+      enabled: !!context?.data?.ticket.id,
     }
   );
 
@@ -390,7 +390,7 @@ export const Timer = () => {
                     }
                   : {}),
               },
-              context?.data.ticket.id,
+              context?.data?.ticket.id ?? '',
               workspaceId as string
             ).then(() => {
               if (page === 1) {
