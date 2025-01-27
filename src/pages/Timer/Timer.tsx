@@ -61,7 +61,7 @@ export const Timer = () => {
   const [fetchedCurrent, setFetchedCurrent] = useState<boolean>(false);
 
   const { client } = useDeskproAppClient();
-  const { context } = useDeskproLatestAppContext<{ticket: {id: string}}, {}>();
+  const { context } = useDeskproLatestAppContext<{ticket: {id: string}}, Record<string, never>>();
 
   useInitialisedDeskproAppClient((client) => {
     client.setTitle(`Create Time Entry`);
